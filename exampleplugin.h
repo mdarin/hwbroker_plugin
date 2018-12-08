@@ -3,23 +3,43 @@
 
 #include "example_global.h"
 
+#include <map>
+
+#include <QMap>
+#include <QMultiHash>
+#include <QPair>
+#include <QString>
+#include <QThread>
 #include <QVector>
-//#include <QMap>
 
-#include <ihwwrapperplugin.h>
+#include <hardwaretypes.h>
+#include <ihwbrokerplugin.h>
 
-class OORange {};
 
-class EXAMPLESHARED_EXPORT ExamplePlugin : public IHWWrapperPlugin {
+class EXAMPLESHARED_EXPORT ExamplePlugin : public IHWBrokerPlugin {
+    Q_OBJECT
 public:
-    ExamplePlugin(IHardwareWrapper* hwwrapper);
-    /**
-     * @brief Functiomn callsed from wrapper it sends someting to HWBroker
-     * @param derp some parameter
-     */
-    void sampleFunction(int derp);
+    ExamplePlugin(QString complexname);
+
+    //! called from HWBroker
+    void addConsumer(QString consumer_id);
+
+    struct ConsumerControlEvent
+    {
+        QString consumer;
+        QString domain;
+        QString id;
+        QVariant value;
+    };
+signals:
+    void init();    //
+
+protected:
+    //! called from HWBroker
+    void processIndicationImpl(const QVariantList& indication);
 
 private:
+    void exampleHWReader();
 
 };
 
